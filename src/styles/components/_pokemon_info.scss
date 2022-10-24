@@ -1,0 +1,83 @@
+
+
+#pokemon-page {
+    height: 100% auto;
+    padding: 0% 10% 0% 10%;
+}
+
+#pokemon-name {
+    text-transform: capitalize;
+}
+
+#pokemon-order {
+    font-style: italic;
+}
+
+#pokemon-img {
+    width: 100%;
+}
+
+.pokemon-type {
+    border-radius: 50%;
+    box-shadow: 0px 0px 14px -2px #000000;
+    -webkit-box-shadow: 0px 0px 14px -2px #000000;
+    width: 100%;
+    /* max-width: 15%;
+    margin: 5% 3%; */
+    max-width: 15%;
+    margin: 5% 3%;
+}
+
+.pokedex-title {
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+
+.pokedex-subtitle {
+    margin: 0.5em 0em 0em 1em;
+}
+
+.efficiencies {
+    display: flex;
+    margin: 0em 1em;
+
+    .efficiency {
+        align-self: center;
+        color: white!important;
+        display: flex;
+        margin: 0.35em 0.35em!important;
+        width: 12em;
+        padding: 0!important;
+        max-width: 9em;
+        justify-content: center;
+        flex-direction: column;
+        max-width: 85px;
+
+        img {
+            /* margin: 0em 0.5em 0em -1.5em !important; */
+            /* width: 55px; */
+            width: 3em;
+        }
+
+        
+    }
+    
+    .bug { background-color: $color-bug; &:hover { background-color: $color-bug; }}
+    .dark { background-color: $color-dark; &:hover { background-color: $color-dark; }}
+    .dragon { background-color: $color-dragon; &:hover { background-color: $color-dragon; }}
+    .electric { background-color: $color-electric; &:hover { background-color: $color-electric; }}
+    .fairy { background-color: $color-fairy; &:hover { background-color: $color-fairy; }}
+    .fighting { background-color: $color-fighting; &:hover { background-color: $color-fighting; }}
+    .fire { background-color: $color-fire; &:hover { background-color: $color-fire; }}
+    .flying { background-color: $color-flying; &:hover { background-color: $color-flying; }}
+    .ghost { background-color: $color-ghost; &:hover { background-color: $color-ghost; }}
+    .grass { background-color: $color-grass; &:hover { background-color: $color-grass; }}
+    .ground { background-color: $color-ground; &:hover { background-color: $color-ground; }}
+    .ice { background-color: $color-ice; &:hover { background-color: $color-ice; }}
+    .normal { background-color: $color-normal; &:hover { background-color: $color-normal; }}
+    .poison { background-color: $color-poison; &:hover { background-color: $color-poison; }}
+    .psychic { background-color: $color-psychic; &:hover { background-color: $color-psychic; }}
+    .rock { background-color: $color-rock; &:hover { background-color: $color-rock; }}
+    .steel { background-color: $color-steel; &:hover { background-color: $color-steel; }}
+    .water { background-color: $color-water; &:hover { background-color: $color-water; }}
+}

@@ -1,0 +1,16 @@
+
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.MuiPaper-root {
+    border-radius: 0px!important;
+    box-shadow: none!important;
+}
+
+.MuiTooltip-tooltip {
+    font-size: 18px!important;
+}
+
