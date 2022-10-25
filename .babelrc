@@ -1,0 +1,5 @@
+
+{
+    // Necesario para que babel convierta el código
+    "presets": ["@babel/preset-env"]
+}
