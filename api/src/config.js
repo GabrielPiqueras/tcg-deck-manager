@@ -7,5 +7,6 @@ export default {
     host: process.env.HOST,
     database: process.env.DATABASE,
     user: process.env.USER,
-    password: process.env.PASSWORD
+    password: process.env.PASSWORD,
+    tcg_api_key: process.env.TCG_API_KEY
 }
