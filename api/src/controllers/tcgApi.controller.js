@@ -130,6 +130,31 @@ const insertCardType = async(cardId, typeId) => {
     });
 }
 
+const insertCardSubtype = async(cardId, subtypeId) => {
+
+    const connection = await getConnection();
+    connection.query('INSERT INTO card_subtypes SET ?', { card_id: cardId, subtype_id: subtypeId}, function (error, results, fields) {
+        if (error) throw error;
+    });
+}
+
+const insertCardAttack = async(cardId, attackId, name, damage, text) => {
+
+    const connection = await getConnection();
+
+    const attack = {
+        card_id: cardId,
+        attack_id: attackId,
+        name: name,
+        damage: damage,
+        text: text
+    };
+
+    connection.query('INSERT INTO card_attacks SET ?', attack, function (error, results, fields) {
+        if (error) throw error;
+    });
+}
+
 const importCards = async(req, res) => {
 
     const setId = req.params.setId; // set for expansion
@@ -151,8 +176,6 @@ const importCards = async(req, res) => {
 
         let cardData = {};
 
-        // cardData.set_id = card.set.id  || null; // OJITOOOOOOOOOOOOOOOO
-
         cardData.shortening = card.id;
         cardData.supertype = card.supertype;
         cardData.name = card.name;
@@ -170,7 +193,7 @@ const importCards = async(req, res) => {
         cardData.cardmarket_url = card.cardmarket.url || null;  
         
         // DATOS QUE OBTENER POR CONSULTA
-        // console.log('Muestro card: ', card);
+        console.log('Muestro card: ', card);
 
         // Insetando en la base de datos
 
@@ -180,31 +203,54 @@ const importCards = async(req, res) => {
         cardData.set_id = sets[0].id;
         cardData.rarity_id = rarities[0].id;
         
-       
-        
-        // RECORRER TYPES
+        let card_id;
 
+        // IMPORTO LA CARTA Y OBTENGO SU ID
+        connection.query('INSERT INTO cards SET ?', cardData, function (error, results, fields) {
+            if (error) throw error;
+
+            card_id = results.insertId;
+        });
+
+        // RECORRO SUS TIPOS (SI TUVIERA)
         if (card.types) {
             
             card.types.map(async(type) => {
-                const results = await connection.query(`SELECT id FROM types WHERE name = '${type}'`);
-                const type_id = results[0].id || undefined;
-    
-                connection.query('INSERT INTO cards SET ?', cardData, function (error, results, fields) {
-                    if (error) throw error;
-        
-                    let card_id = results.insertId;
-                    
-                    insertCardType(card_id, type_id);
-                });
+                const query = await connection.query(`SELECT id FROM types WHERE name = '${type}'`);
+                const type_id = query[0].id || undefined;
+                
+                insertCardType(card_id, type_id);
             });
         }
               
-        // RECORRER SUBTYPES
-        // card.subtypes.map(async(subtype) => {
-
-        // });
+        // RECORRER SUBTYPES (si tuviera)
+        if (card.subtypes) {
+            
+            card.subtypes.map(async(subtype) => {
+                const query = await connection.query(`SELECT id FROM subtypes WHERE name = '${subtype}'`);
+                const subtype_id = query[0].id || undefined;
+                
+                insertCardSubtype(card_id, subtype_id);
+            });
+        }
+      
         // RECORRER ATTACKS
+        if (card.attacks) {
+            
+            card.attacks.map(async(attack) => {
+                const query = await connection.query(`SELECT * FROM attacks WHERE name = '${attack}'`);
+                const attack_id = query[0].id;
+                const name = query[0].name;
+                const damage = query[0].damage;
+                const text = query[0].text;
+                
+                // CONTAR Cuantas veces aparece una misma palabra en el array attack.cost
+                // HACER UN INSERT EN ATTACK_COSTS con el tipo de energía y la cantidad de esta por cada tipo diferennte en el ataqaue
+                
+                // FALTA MEJORAR
+                // insertCardAttack(card_id, attack_id, name, damage, text);
+            });
+        }
         // card.attacks.map(async(attack) => {
 
         // });
