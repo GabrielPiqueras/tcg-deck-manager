@@ -2,6 +2,14 @@ import { getConnection } from '../database/database';
 import config from '../config';
 import fetch from 'node-fetch';
 
+const removeWithFilter = (array) => {
+    let outputArray = array.filter((v, i, self) => {
+        return i == self.indexOf(v);
+    });
+      
+    return outputArray;
+}
+
 const importTypes = async(req, res) => {
     const connection = await getConnection();
     const endpoint = 'https://api.pokemontcg.io/v2/types';
@@ -138,19 +146,83 @@ const insertCardSubtype = async(cardId, subtypeId) => {
     });
 }
 
-const insertCardAttack = async(cardId, attackId, name, damage, text) => {
+const insertCardEfficience = async(cardId, typeId, effValue) => {
+
+    const connection = await getConnection();
+
+    const efficience = {
+        card_id: cardId,
+        type_id: typeId,
+        value: effValue,
+    };
+
+    connection.query('INSERT INTO card_efficiencies SET ?', efficience, function (error, results, fields) {
+        if (error) throw error;
+    });
+}
+
+const insertCardAbility = async(cardId, name, text, type) => {
+
+    const connection = await getConnection();
+
+    const ability = {
+        card_id: cardId,
+        ability_name: name,
+        ability_text: text,
+        ability_type: type
+    };
+
+    connection.query('INSERT INTO card_abilities SET ?', ability, function (error, results, fields) {
+        if (error) throw error;
+    });
+}
+
+const insertCardAttack = async(cardId, attackObj) => {
 
     const connection = await getConnection();
 
     const attack = {
         card_id: cardId,
-        attack_id: attackId,
-        name: name,
-        damage: damage,
-        text: text
+        name: attackObj.name,
+        damage: attackObj.damage,
+        text: attackObj.text
     };
 
-    connection.query('INSERT INTO card_attacks SET ?', attack, function (error, results, fields) {
+    connection.query('INSERT INTO card_attacks SET ?', attack, (error, results, fields) => {
+        if (error) throw error;
+
+        let attackId = results.insertId;
+
+        // Si tiene coste obtengo el coste de cada uno de sus tipos
+        if (attackObj.cost) {
+
+            let attackTypes = attackObj.cost;
+            let uniqueTypes = [...new Set(attackTypes)];
+            
+            // Recorro y hago una inserción de cada tipo de coste
+            uniqueTypes.forEach( async(uniqueType) => {
+                let cost = attackTypes.filter((type) => type === uniqueType).length;
+                
+                insertAttackCost(attackId, uniqueType, cost);
+            });
+        }
+    });
+}
+
+const insertAttackCost = async(attackId, uniqueType, cost) => {
+
+    const connection = await getConnection();
+    
+    const query = await connection.query(`SELECT id, name FROM types WHERE name = '${uniqueType}'`);
+    const typeId = query[0].id || undefined;
+    
+    const attackCost = {
+        attack_id: attackId,
+        type_id: typeId,
+        cost: cost
+    }
+    
+    connection.query('INSERT INTO attack_costs SET ?', attackCost, function (error, results, fields) {
         if (error) throw error;
     });
 }
@@ -176,6 +248,8 @@ const importCards = async(req, res) => {
 
         let cardData = {};
 
+        console.log('Card name: ,', card.name);
+
         cardData.shortening = card.id;
         cardData.supertype = card.supertype;
         cardData.name = card.name;
@@ -190,10 +264,10 @@ const importCards = async(req, res) => {
         cardData.retried_type = card.retreatCost ? card.retreatCost[0] : null;
         cardData.small_img = card.images.small || null;
         cardData.large_img = card.images.large || null;
-        cardData.cardmarket_url = card.cardmarket.url || null;  
-        
+        cardData.cardmarket_url = card.cardmarket ? card.cardmarket.url : null;  
+
         // DATOS QUE OBTENER POR CONSULTA
-        console.log('Muestro card: ', card);
+        // console.log('Muestro card: ', card);
 
         // Insetando en la base de datos
 
@@ -210,62 +284,82 @@ const importCards = async(req, res) => {
             if (error) throw error;
 
             card_id = results.insertId;
+            console.log('Muestro cardId dentro: ', card_id);
+            
+            // RECORRO SUS TIPOS (SI TUVIERA)
+            if (card.types) {
+                
+                card.types.map(async(type) => {
+                    const query = await connection.query(`SELECT id FROM types WHERE name = '${type}'`);
+                    const type_id = query[0].id || undefined;
+                    
+                    insertCardType(card_id, type_id);
+                });
+            }
+                  
+            // RECORRER SUBTYPES (si tuviera)
+            if (card.subtypes) {
+                
+                card.subtypes.map(async(subtype) => {
+                    const query = await connection.query(`SELECT id FROM subtypes WHERE name = '${subtype}'`);
+                    const subtype_id = query[0].id || undefined;
+                    
+                    insertCardSubtype(card_id, subtype_id);
+                });
+            }
+          
+            // RECORRER ATTACKS
+            if (card.attacks) {
+                
+                card.attacks.map(async(attackObj) => {
+                    // Inserto el ataque de la carta
+                    insertCardAttack(card_id, attackObj);
+                });
+            }
+    
+            // RECORRER WEAKNESSES
+            if (card.weaknesses) {
+    
+                card.weaknesses.map(async(weakness) => {
+                    const query = await connection.query(`SELECT id FROM types WHERE name = '${weakness.type}'`);
+                    const type_id = query[0].id || undefined;
+    
+                    const w_value = parseInt(weakness.value.replace(/[^\-?(0-9)]+/g, ''));
+                    insertCardEfficience(card_id, type_id, w_value);
+                });
+            }
+    
+            // RECORRER RESISTANCES
+            if (card.resistances) {
+    
+                card.resistances.map(async(resistance) => {
+                    const query = await connection.query(`SELECT id FROM types WHERE name = '${resistance.type}'`);
+                    const type_id = query[0].id || undefined;
+    
+                    const r_value = parseInt(resistance.value.replace(/[^\-?(0-9)]+/g, ''));
+                    insertCardEfficience(card_id, type_id, r_value);
+                });
+            }
+    
+            if (card.abilities) {
+    
+                console.log('Entra 2');
+                console.log('card_id: ', card_id);
+    
+                card.abilities.map(async(ability) => {
+    
+                    const name = ability.name;
+                    const text = ability.text;
+                    const type = ability.type;
+    
+                    console.log('card_id, name, text, type: ', card_id, name, text, type);
+                });
+            }
         });
 
-        // RECORRO SUS TIPOS (SI TUVIERA)
-        if (card.types) {
-            
-            card.types.map(async(type) => {
-                const query = await connection.query(`SELECT id FROM types WHERE name = '${type}'`);
-                const type_id = query[0].id || undefined;
-                
-                insertCardType(card_id, type_id);
-            });
-        }
-              
-        // RECORRER SUBTYPES (si tuviera)
-        if (card.subtypes) {
-            
-            card.subtypes.map(async(subtype) => {
-                const query = await connection.query(`SELECT id FROM subtypes WHERE name = '${subtype}'`);
-                const subtype_id = query[0].id || undefined;
-                
-                insertCardSubtype(card_id, subtype_id);
-            });
-        }
-      
-        // RECORRER ATTACKS
-        if (card.attacks) {
-            
-            card.attacks.map(async(attack) => {
-                const query = await connection.query(`SELECT * FROM attacks WHERE name = '${attack}'`);
-                const attack_id = query[0].id;
-                const name = query[0].name;
-                const damage = query[0].damage;
-                const text = query[0].text;
-                
-                // CONTAR Cuantas veces aparece una misma palabra en el array attack.cost
-                // HACER UN INSERT EN ATTACK_COSTS con el tipo de energía y la cantidad de esta por cada tipo diferennte en el ataqaue
-                
-                // FALTA MEJORAR
-                // insertCardAttack(card_id, attack_id, name, damage, text);
-            });
-        }
-        // card.attacks.map(async(attack) => {
-
-        // });
-        // RECORRER WEAKNESSES
-        // card.weakness.map(async() => {
-
-        // });
-        // RECORRER RESISTANCES
-        // card.resistances.map(async() => {
-
-        // });
-    
     });
     
-    res.json('Cartas importadas correctamente');
+    res.json('Cartas importadas correctamentee');
 }
 
 export const methods = {
