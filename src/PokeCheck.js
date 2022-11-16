@@ -19,6 +19,7 @@ import './styles/styles.scss';
 
 const PokeCheck = () => {
 
+    // Obtengo el usuario de la caché, en caso contrario estará desconectado
     const init = () => {
       const user = localStorage.getItem('user');
       return JSON.parse(user) || { logged: false };
@@ -26,6 +27,7 @@ const PokeCheck = () => {
     
     const [ user, dispatch ] = useReducer(authReducer, [], init);
     
+    // Cada vez que cambia 'user', se actualiza en la caché
     useEffect(() => {
       localStorage.setItem('user', JSON.stringify(user));
     }, [user]);

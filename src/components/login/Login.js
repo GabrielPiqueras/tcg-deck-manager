@@ -119,20 +119,16 @@ export const Login = () => {
                 id="username"
                 label="Usuario"
                 name="username"
-                autoComplete="username"
                 autoFocus
-                value='Usuario'
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="password"
-                label="Contraseña"
-                type="password"
                 id="password"
-                autoComplete="current-password"
-                value='01010101010'
+                label="Contraseña"
+                name="password"
+                type="password"
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

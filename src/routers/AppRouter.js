@@ -14,17 +14,14 @@ export const AppRouter = () => {
 
     const authContext = useContext(AuthContext);
     const { user: { logged }} = authContext;
-
+    
     return (
         <Router>
             <Navbar />
 
             <Routes>
-                <Route exact path='/' element={ <Pokedex /> }></Route>
                 <Route exact path='/login' element={ <Public isAuth={ logged } component={ Login } /> }></Route>
-                <Route exact path='/pokedex' element={ <Pokedex /> }></Route>
-                <Route exact path='/pokedex/:name' element={ <PokemonInfo /> }></Route>
-                <Route exact path='/otro' element={ <Otro /> }></Route>
+                {/* <Route exact path='/otro' element={ <Otro /> }></Route> */}
                 <Route path="*" element={ <Private isAuth={ logged } component={ AuthRoutes } /> }></Route>
             </Routes>
         </Router>
