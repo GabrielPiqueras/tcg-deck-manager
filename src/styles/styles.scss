@@ -1,9 +1,14 @@
 @import './bases/bases';
+@import './components/my_decks';
 @import './components/pokedex';
 @import './components/pokemon_info';
 @import './mui/mui';
 
 html, body {
     margin: 0px;
+}
+
+a {
+    text-decoration: none;
 }
 

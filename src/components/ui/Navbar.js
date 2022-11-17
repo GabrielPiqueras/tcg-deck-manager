@@ -33,10 +33,12 @@ import { types } from '../../types/types';
 
 const pages = [
     { name: 'Pokedex', route: '/pokedex' },
+    { name: 'Mazos', route: '/decks' },
     // { name: 'Objetos', route: '/items' },
     // { name: 'Comparar', route: '/compare' }
 ];
 const settings = [
+    { name: 'Mis Mazos', route: '/my-decks' },
     { name: 'Perfil', route: '/profile' },
     { name: 'Cuenta', route: '/account' },
     { name: 'Dashboard', route: '/dashboard' },

@@ -8,11 +8,16 @@ import { Logout } from '../components/login/Logout';
 import { Pokedex } from '../components/pokedex/Pokedex';
 import { PokemonInfo } from '../components/pokedex/PokemonInfo';
 import { SearchCards } from '../components/dashboard/SearchCards';
+import { MyDecks } from '../decks/MyDecks';
+import { AddDeck } from '../decks/AddDeck';
 
 export const AuthRoutes = () => {
     return (
             <>
                 <Routes>
+                    <Route exact path='/decks' element={ <SearchCards /> }></Route>
+                    <Route exact path='/my-decks' element={ <MyDecks /> }></Route>
+                    <Route exact path='/add-deck' element={ <AddDeck /> }></Route>
                     <Route exact path='/search-cards' element={ <SearchCards /> }></Route>
                     <Route exact path='/pokedex' element={ <Pokedex /> }></Route>
                     <Route exact path='/pokedex/:name' element={ <PokemonInfo /> }></Route>
