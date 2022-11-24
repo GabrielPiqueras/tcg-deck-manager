@@ -1,6 +1,6 @@
 import React from 'react'
-import { ImportTheme } from '../components/mui/ImportTheme'
-import { SearchCards } from '../components/cards/SearchCards'
+import { ImportTheme } from '../mui/ImportTheme'
+import { SearchCards } from '../cards/SearchCards'
 
 export const AddDeck = () => {
     return (

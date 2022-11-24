@@ -28,11 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "babel-node": "babel-node --presets=@babel/preset-env",
-    "server": "node api/src/index.js",
-    "client": "nodemon --exec npm run babel-node api/src/index.js",
-    "dev": "concurrently \"npm run start\" \"npm run client\""
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [

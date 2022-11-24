@@ -8,8 +8,8 @@ import { Logout } from '../components/login/Logout';
 import { Pokedex } from '../components/pokedex/Pokedex';
 import { PokemonInfo } from '../components/pokedex/PokemonInfo';
 import { SearchCards } from '../components/dashboard/SearchCards';
-import { MyDecks } from '../decks/MyDecks';
-import { AddDeck } from '../decks/AddDeck';
+import { MyDecks } from '../components/decks/MyDecks';
+import { AddDeck } from '../components/decks/AddDeck';
 
 export const AuthRoutes = () => {
     return (

@@ -5,9 +5,9 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
 // Components
-import { FloatingButton } from '../components/mui/FloatingButton';
+import { FloatingButton } from '../mui/FloatingButton';
 import AddIcon from '@mui/icons-material/Add';
-import { ImportTheme } from '../components/mui/ImportTheme';
+import { ImportTheme } from '../mui/ImportTheme';
 import { Grid } from '@mui/material';
 import { Box, height } from '@mui/system';
 import { Link } from 'react-router-dom';
