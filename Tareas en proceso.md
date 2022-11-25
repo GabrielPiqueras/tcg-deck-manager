@@ -5,8 +5,8 @@
 - [x] Crear en menú de usuario el item **Mis Mazos**, con ruta y componente.
 - [x] Crear un botón de ➕ estilo android en la vista **Mis Mazos**, llevará a la ruta y componente **Crear Mazo**.
 - [x] La vista estará formada por el componente **Creador de Mazo** y el componente **Buscador de cartas**
-- [ ] En dicho componente, mediante una ruta en Expresss, obtener un JSON con la consulta de las últimas 250 cartas de la última expansión existente e importarda *(Tempestad Plateada en este caso)* de la base de datos.
-- [ ] Recorrer esos registros, por cada uno crear un componente **Carta**.
+- [x] En dicho componente, mediante una ruta en Expresss, obtener un JSON con la consulta de las últimas 250 cartas de la última expansión existente e importarda *(Tempestad Plateada en este caso)* de la base de datos.
+- [x] Recorrer esos registros, por cada uno crear un componente **Carta**.
 - [ ] Cuadrar también el buscador de cartas con las rejillas grid que proporciona Mui.
 - [ ] El componente **Carta** no se ve afectado por dimensiones, y recibe para renderizarse:
     - La Url de la imagen

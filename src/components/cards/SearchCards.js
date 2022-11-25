@@ -34,28 +34,26 @@ export const SearchCards = () => {
     
     return (
         <SearchContext.Provider value={{ searchValue, setSearchValue }}>
-            <ImportTheme>
-                <Box sx={{ flexGrow: 1 }}>
-                    <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
-                        <Grid container spacing={0} columns={{ xs: 12 }}>
-                            <Search />
-                        </Grid>
-                        <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
-                            {
-                                cards.map(card => 
-                                    <Grid item xs={1} sm={2} md={2} key={card.id}>
-                                        <Item>
-                                            <img src={card.small_img} alt={card.name} />
-                                            <div>{ card.name }</div>
-                                        </Item>
-                                    </Grid>
-                                )
-                            }
-                        </Grid>
-                    
+            <Box sx={{ flexGrow: 1 }}>
+                <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+                    <Grid container spacing={0} columns={{ xs: 12 }}>
+                        <Search />
                     </Grid>
-                </Box>
-            </ImportTheme>
+                    <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+                        {
+                            cards.map(card => 
+                                <Grid item xs={1} sm={2} md={2} key={card.id}>
+                                    <Item>
+                                        <img src={card.small_img} alt={card.name} />
+                                        <div>{ card.name }</div>
+                                    </Item>
+                                </Grid>
+                            )
+                        }
+                    </Grid>
+                
+                </Grid>
+            </Box>
         </SearchContext.Provider>
     )
 }
