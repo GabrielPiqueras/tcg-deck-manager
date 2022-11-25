@@ -19,6 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../../auth/AuthContext';
 import { types } from '../../types/types';
 import { Navigate } from 'react-router-dom';
+import { authUser } from '../../helpers/authUser';
 
 
 
@@ -50,12 +51,17 @@ export const Login = () => {
     const username = document.querySelector('#username').value;
     const password = document.querySelector('#password').value;
     
-    dispatch({
-      type: types.login,
-      payload: username
+    authUser(username, password).then(user => {
+      
+      if (user) {
+        dispatch({
+          type: types.login,
+          payload: user
+        });
+        
+        navigate('/', { replace: true });
+      }
     });
-    
-    navigate('/', { replace: true });
   }
 
   // const handleSubmit = (event) => {
