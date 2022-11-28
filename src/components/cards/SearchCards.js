@@ -50,26 +50,16 @@ export const SearchCards = () => {
         const exist = cardExist(c.id);
 
         if (exist) {
+            if (exist.quantity < 4 || exist.supertype === 'Energy') {
 
-            if (exist.supertype === 'Trainer' || exist.supertype === 'Pokémon') {
-                if (exist.quantity < 4) {
-
-                    const oldCards = deckCards.filter(card => card.id !== c.id);
-                    
-                    const newQuantity = exist.quantity + 1;
-                    const newCard = { ...c, quantity: newQuantity };
-    
-                    setDeckCards([...oldCards, newCard]);
-                } else {
-                    alert('Error, no puedes añadir más de 4 cartas del tipo: ' + exist.supertype);
-                }
-            } else {
                 const oldCards = deckCards.filter(card => card.id !== c.id);
-                    
+                
                 const newQuantity = exist.quantity + 1;
                 const newCard = { ...c, quantity: newQuantity };
 
                 setDeckCards([...oldCards, newCard]);
+            } else {
+                alert('Error, no puedes añadir más de 4 cartas del tipo: ' + exist.supertype);
             }
         } else {
             const card = {
