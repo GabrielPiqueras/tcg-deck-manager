@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getCards } from '../../helpers/getCards'
 
 // Context
-import { SearchContext } from '../../context/SearchContext';
+import { AddDeckContext } from '../../context/AddDeckContext';
 
 // Mui
 import { experimentalStyled as styled } from '@mui/material/styles';
@@ -23,37 +23,85 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
   }));
 
+/**
+ * @cards : Estado que guarda las cartas encontradas al buscar
+ * @setCards : Función para establecer nuevas cartas buscadas
+ * 
+ * @searchValue : Estado que guarda la palabra buscada. Cada vez que cambia, setCards() actualiza las cartas.
+ * @setSearchValue : Función para cambiar la palabra buscada
+ * 
+ */
+
 export const SearchCards = () => {
     
-    const [cards, setCards] = useState([]);
-    const [ searchValue, setSearchValue ] = useState('');
-
-    useEffect(() => {
-        getCards(searchValue).then(cards => setCards(cards));
-    }, [searchValue])
+    const addDeckContext = useContext(AddDeckContext);
+    const { searchCards, setSearchCards, deckCards, setDeckCards, searchWord } = addDeckContext;
     
+    useEffect(() => {
+        getCards(searchWord).then(cards => setSearchCards(cards));
+    }, [searchWord]);
+
+    const cardExist = (id) => {
+        return deckCards.find(card => card.id === id);
+    }
+
+    const handleCardClick = (c) => {
+        
+        const exist = cardExist(c.id);
+
+        if (exist) {
+
+            if (exist.supertype === 'Trainer' || exist.supertype === 'Pokémon') {
+                if (exist.quantity < 4) {
+
+                    const oldCards = deckCards.filter(card => card.id !== c.id);
+                    
+                    const newQuantity = exist.quantity + 1;
+                    const newCard = { ...c, quantity: newQuantity };
+    
+                    setDeckCards([...oldCards, newCard]);
+                } else {
+                    alert('Error, no puedes añadir más de 4 cartas del tipo: ' + exist.supertype);
+                }
+            } else {
+                const oldCards = deckCards.filter(card => card.id !== c.id);
+                    
+                const newQuantity = exist.quantity + 1;
+                const newCard = { ...c, quantity: newQuantity };
+
+                setDeckCards([...oldCards, newCard]);
+            }
+        } else {
+            const card = {
+                ...c,
+                quantity: 1
+            }
+
+            setDeckCards(cards => [...cards, card]);
+        }
+    }
+    
+    // Propago el estado del término buscado al componente <Search />
     return (
-        <SearchContext.Provider value={{ searchValue, setSearchValue }}>
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
-                    <Grid container spacing={0} columns={{ xs: 12 }}>
-                        <Search />
-                    </Grid>
-                    <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
-                        {
-                            cards.map(card => 
-                                <Grid item xs={1} sm={2} md={2} key={card.id}>
-                                    <Item>
-                                        <img src={card.small_img} alt={card.name} />
-                                        <div>{ card.name }</div>
-                                    </Item>
-                                </Grid>
-                            )
-                        }
-                    </Grid>
-                
+        <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+                <Grid container spacing={0} columns={{ xs: 12 }}>
+                    <Search />
                 </Grid>
-            </Box>
-        </SearchContext.Provider>
+                <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+                    {
+                        searchCards.map((card) => 
+                            <Grid item xs={1} sm={2} md={2} key={card.id}>
+                                <Item className='card' onClick={ () => handleCardClick(card) }>
+                                    <img src={card.small_img} alt={card.name} />
+                                    <div>{ card.name }</div>
+                                </Item>
+                            </Grid>
+                        )
+                    }
+                </Grid>
+            
+            </Grid>
+        </Box>
     )
 }

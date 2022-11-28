@@ -1,17 +1,19 @@
 import React, { useContext } from 'react';
 import { Input } from '../mui/Input';
-import { SearchContext } from '../../context/SearchContext';
+
+// Context
+import { AddDeckContext } from '../../context/AddDeckContext';
 
 export const Search = () => {
     
-    const searchContext = useContext(SearchContext);
-    const { searchValue, setSearchValue } = searchContext;
+    const addDeckContext = useContext(AddDeckContext);
+    const { searchWord, setSearchWord } = addDeckContext;
 
     const handleInputChange = (e) => {
-        setSearchValue(e.target.value);
+        setSearchWord(e.target.value);
     }
 
     return(
-        <Input value={ searchValue } onChange={ handleInputChange } width={600} maxWidth='90%' placeholder='Buscar pokemon' />
+        <Input value={ searchWord } onChange={ handleInputChange } width={600} maxWidth='90%' placeholder='Buscar pokemon' />
     )
 }
