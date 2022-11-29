@@ -35,7 +35,15 @@ const Item = styled(Paper)(({ theme }) => ({
 export const SearchCards = () => {
     
     const addDeckContext = useContext(AddDeckContext);
-    const { searchCards, setSearchCards, deckCards, setDeckCards, searchWord } = addDeckContext;
+    const {
+        searchCards,
+        setSearchCards,
+        deckCards,
+        setDeckCards,
+        deckProperties,
+        setDeckProperties,
+        searchWord
+    } = addDeckContext;
     
     useEffect(() => {
         getCards(searchWord).then(cards => setSearchCards(cards));
@@ -45,29 +53,45 @@ export const SearchCards = () => {
         return deckCards.find(card => card.id === id);
     }
 
-    const handleCardClick = (c) => {
+    const handleCardAdd = (c) => {
         
         const exist = cardExist(c.id);
+        const { total } = deckProperties;
 
-        if (exist) {
-            if (exist.quantity < 4 || exist.supertype === 'Energy') {
+        if (total <  60) {
 
-                const oldCards = deckCards.filter(card => card.id !== c.id);
+            if (exist) {
+                const { id, supertype, quantity } = exist;
                 
-                const newQuantity = exist.quantity + 1;
-                const newCard = { ...c, quantity: newQuantity };
-
-                setDeckCards([...oldCards, newCard]);
+                if (supertype === 'Energy' || quantity < 4) {
+                    const newQuantity = quantity + 1;
+    
+                    setDeckCards(cards => cards.map(card => {
+                        if (card.id === id) {
+                            return {...card, quantity: newQuantity}
+                        }
+    
+                        return card;
+                    }));
+    
+                    setDeckProperties(properties => {
+                        return {...properties, total: properties.total + 1}
+                    });
+                } else {
+                    alert('Error, no puedes añadir más de 4 cartas del tipo: ' + exist.supertype);
+                }
             } else {
-                alert('Error, no puedes añadir más de 4 cartas del tipo: ' + exist.supertype);
+                const card = {
+                    ...c,
+                    quantity: 1
+                }
+    
+                setDeckCards(cards => [...cards, card]);
+    
+                setDeckProperties(properties => {
+                    return {...properties, total: properties.total + 1}
+                });
             }
-        } else {
-            const card = {
-                ...c,
-                quantity: 1
-            }
-
-            setDeckCards(cards => [...cards, card]);
         }
     }
     
@@ -80,17 +104,20 @@ export const SearchCards = () => {
                 </Grid>
                 <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
                     {
-                        searchCards.map((card) => 
+                        (searchCards.length > 0)
+                        ?
+                        (searchCards.map((card) => 
                             <Grid item xs={1} sm={2} md={2} key={card.id}>
-                                <Item className='card' onClick={ () => handleCardClick(card) }>
+                                <Item className='card' onClick={ () => handleCardAdd(card) }>
                                     <img src={card.small_img} alt={card.name} />
                                     <div>{ card.name }</div>
                                 </Item>
                             </Grid>
-                        )
+                        ))
+                        :
+                        (<div className='no-results'>Sin resultados.</div>)
                     }
                 </Grid>
-            
             </Grid>
         </Box>
     )

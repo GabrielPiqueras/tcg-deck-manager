@@ -9,7 +9,14 @@ import { AddDeckContext } from '../../context/AddDeckContext'
 
 export const AddDeck = () => {
 
+    const sumDeckCards = () => {
+
+        return 0;
+    }
+
     const [ deckCards, setDeckCards ] = useState([]);
+    const [ deckProperties, setDeckProperties ] = useState({total: 0});
+
     const [ searchCards, setSearchCards ] = useState([]);
     const [ searchWord, setSearchWord ] = useState('');
 
@@ -18,6 +25,9 @@ export const AddDeck = () => {
         // Cartas añadidas al mazo
         deckCards,
         setDeckCards,
+        // Propiedades del mazo
+        deckProperties,
+        setDeckProperties,
         // Cartas buscadas
         searchCards,
         setSearchCards,
@@ -26,15 +36,13 @@ export const AddDeck = () => {
         setSearchWord
     };
 
-    console.log(deckCards);
-
     return (
-        <AddDeckContext.Provider value={ contextData }>
-            <ImportTheme>
-                <h1>Nuevo mazo</h1>
-                <DeckCards />
-                <SearchCards />
-            </ImportTheme>
-        </AddDeckContext.Provider>
+        <ImportTheme>
+            <AddDeckContext.Provider value={ contextData }>
+                    <h1>Nuevo mazo ({deckProperties.total}/60)</h1>
+                    <DeckCards />
+                    <SearchCards />
+            </AddDeckContext.Provider>
+        </ImportTheme>
     )
 }

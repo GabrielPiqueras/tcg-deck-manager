@@ -21,7 +21,45 @@ const Item = styled(Paper)(({ theme }) => ({
 export const DeckCards = () => {
 
     const addDeckContext = useContext(AddDeckContext);
-    const { deckCards } = addDeckContext;
+    const { deckCards, setDeckCards, setDeckProperties } = addDeckContext;
+
+    const cardExist = (id) => {
+        return deckCards.find(card => card.id === id);
+    }
+
+    const handleCardRemove = (c) => {
+        
+        const exist = cardExist(c.id);
+
+        if (exist) {
+            const { id, quantity } = exist;
+
+            if (quantity > 1) {
+
+                const newQuantity = quantity - 1;
+
+                setDeckCards(cards => cards.map(card => {
+                    if (card.id === id) {
+                        return {...card, quantity: newQuantity}
+                    }
+                    
+                    return card;
+                }));
+               
+                setDeckProperties(properties => {
+                    return {...properties, total: properties.total - 1}
+                });
+            } else {
+                setDeckCards(cards => cards.filter(card => {
+                    return card.id !== id;
+                }));
+
+                setDeckProperties(properties => {
+                    return {...properties, total: properties.total - 1}
+                });
+            }
+        }
+    }
     
     return (
         <>
@@ -36,10 +74,12 @@ export const DeckCards = () => {
                         {
                             deckCards.map(card => 
                                 <Grid item xs={1} sm={2} md={2} key={card.id}>
-                                    <Item>
+                                    <Item className='card-remove' onClick={ () => handleCardRemove(card) }>
                                         <img src={card.small_img} alt={card.name} />
-                                        <div>{ card.name }</div>
-                                        <div>Cantidad: { card.quantity }</div>
+                                        <div>
+                                            { card.name }<br />
+                                            Cantidad: { card.quantity }
+                                        </div>
                                     </Item>
                                 </Grid>
                             )
