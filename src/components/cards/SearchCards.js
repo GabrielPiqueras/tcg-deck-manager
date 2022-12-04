@@ -36,8 +36,8 @@ export const SearchCards = () => {
     
     const addDeckContext = useContext(AddDeckContext);
     const {
-        searchCards,
-        setSearchCards,
+        searchedCards,
+        setSearchedCards,
         deckCards,
         setDeckCards,
         deckProperties,
@@ -46,7 +46,7 @@ export const SearchCards = () => {
     } = addDeckContext;
     
     useEffect(() => {
-        getCards(searchWord).then(cards => setSearchCards(cards));
+        getCards(searchWord).then(cards => setSearchedCards(cards));
     }, [searchWord]);
 
     const cardExist = (id) => {
@@ -104,9 +104,9 @@ export const SearchCards = () => {
                 </Grid>
                 <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
                     {
-                        (searchCards.length > 0)
+                        (searchedCards.length > 0)
                         ?
-                        (searchCards.map((card) => 
+                        (searchedCards.map((card) => 
                             <Grid item xs={1} sm={2} md={2} key={card.id}>
                                 <Item className='card' onClick={ () => handleCardAdd(card) }>
                                     <img src={card.small_img} alt={card.name} />

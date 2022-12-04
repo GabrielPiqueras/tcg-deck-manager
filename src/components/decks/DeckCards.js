@@ -63,14 +63,12 @@ export const DeckCards = () => {
     
     return (
         <>
-            <h2>Cartas</h2>
-
-            <Box sx={{ flexGrow: 1 }}>
-                <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+            <Box sx={{ flexGrow: 1, bgcolor: 'background.dashbox', border: 'background.dashboxBorder' }} id='deck-cards'>
+                <Grid container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
                     <Grid container spacing={0} columns={{ xs: 12 }}>
                         
                     </Grid>
-                    <Grid id='cards_search' container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
+                    <Grid container spacing={0} columns={{ xs: 2, sm: 8, md: 8 }}>
                         {
                             deckCards.map(card => 
                                 <Grid item xs={1} sm={2} md={2} key={card.id}>

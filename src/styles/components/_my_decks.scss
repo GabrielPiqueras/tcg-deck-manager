@@ -4,9 +4,18 @@
     justify-content: flex-start;
 }
 
-#grid-add-deck {
+#grid-add-deck, #grid-save-deck {
     display: block;
+}
+
+#grid-add-deck {
     position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+#grid-save-deck {
+    position: fixed;
     right: 20px;
     bottom: 20px;
 }
