@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { SearchCards } from '../cards/SearchCards'
 import { DeckCards } from './DeckCards'
 
@@ -10,10 +10,15 @@ import { Input } from '../mui/Input';
 
 // Context
 import { AddDeckContext } from '../../context/AddDeckContext'
+import { AuthContext } from '../../auth/AuthContext';
 
 // Style
 import styled from '@emotion/styled'
 import { ImportTheme } from '../mui/ImportTheme'
+import { createDeck } from '../../helpers/createDeck';
+
+// Router
+import { useNavigate } from 'react-router-dom';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -25,11 +30,14 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export const AddDeck = () => {
 
+    const authContext = useContext(AuthContext);
+    const navigate = useNavigate();
+    
     const [ deckCards, setDeckCards ] = useState([]);
     const [ deckProperties, setDeckProperties ] = useState({
         title: '',
-        public: true,
-        total: 0
+        isPublic: true,
+        total: 0,
     });
 
     const [ searchedCards, setSearchedCards ] = useState([]);
@@ -53,6 +61,38 @@ export const AddDeck = () => {
 
     const handleTitleChange = (e) => {
         setDeckProperties({...deckProperties, title: e.target.value});
+    }
+
+    const handleSaveDeck = () => {
+        
+        // Logged user info
+        const { user: { data: {id: user_id} }} = authContext;
+        
+        // Deck info
+        const { title, isPublic, total } = deckProperties;
+
+        const cards = deckCards.map(card => {
+            return {
+                id: card.id,
+                quantity: card.quantity
+            }
+        });
+
+        const deckObj = {
+            userId: user_id,
+            title: title,
+            isPublic: isPublic,
+            total: total,
+            cards: cards
+        }
+
+        // createDeck(deckObj);
+        createDeck(deckObj).then(deckCreated => {
+            console.log('deckCreated', deckCreated);
+            if(deckCreated) {
+                navigate('/my-decks', {replace: true});
+            }
+        })
     }
 
     return (
@@ -100,7 +140,7 @@ export const AddDeck = () => {
                                 
                             </Grid>
                             <Grid id='grid-save-deck' item xs={12}>
-                                <FloatingButton id='save-deck' text= 'Guardar' icon={ <SaveIcon sx={{ mr: 1 }} /> } />
+                                <FloatingButton onClick={() => handleSaveDeck()} id='save-deck' text= 'Guardar' icon={ <SaveIcon sx={{ mr: 1 }} /> } />
                             </Grid>
                         </Grid>
                     </Box>

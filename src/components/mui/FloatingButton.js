@@ -4,9 +4,9 @@ import Fab from '@mui/material/Fab';
 
 import PropTypes from 'prop-types';
 
-export const FloatingButton = ({id, size, icon, text, color}) => {
+export const FloatingButton = ({id, size, icon, text, color, onClick}) => {
     return (
-        <Fab id= { id } variant="extended" size={ size } color={ color } aria-label="add">
+        <Fab onClick={ onClick } id= { id } variant="extended" size={ size } color={ color } aria-label="add">
             { icon }
             { text }
         </Fab>
@@ -24,5 +24,6 @@ FloatingButton.propTypes = {
 FloatingButton.defaultProps = {
     size: '',
     text: '',
-    color: 'primary'
+    color: 'primary',
+    onClick: null
 }
